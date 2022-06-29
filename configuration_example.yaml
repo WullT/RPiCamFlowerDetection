@@ -1,0 +1,21 @@
+model:
+  weights_path: models/flower.tflite
+  classes:
+    - 'daisy'
+    - 'wildemoere'
+    - 'flockenblume'
+  image_size: 640
+  confidence_threshold:  0.25
+  iou_threshold: 0.45
+
+image_source:
+  url: http://localhost:8080/?action=snapshot
+  username: cam-server-user
+  password: cam-server-password
+
+dest_endpoint:
+  url: http://<server-ip>:<port>/results
+  username: endpoint-user
+  password: endpoint-password
+
+capture_interval: -1
