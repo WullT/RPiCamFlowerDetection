@@ -30,13 +30,12 @@ args = parser.parse_args()
 
 with open(args.config, "r") as stream:
     try:
-        config = yaml.safe_load(stream)
+        cfg = yaml.safe_load(stream)
     except yaml.YAMLError as exc:
         print(exc)
         exit(1)
 
 
-cfg = yaml.load(open(args.config))
 model_config = cfg.get("model")
 weights = model_config.get("weights_path")
 classes = model_config.get("classes")
