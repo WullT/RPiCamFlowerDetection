@@ -7,11 +7,16 @@ model:
   image_size: 640
   confidence_threshold:  0.25
   iou_threshold: 0.45
+  margin: 20
 
 image_source:
   url: http://localhost:8080/?action=snapshot
   username: cam-server-user
   password: cam-server-password
+
+picamera_config:
+  width: 4656
+  height: 3496
 
 dest_endpoint:
   url: http://<server-ip>:<port>/results
