@@ -38,11 +38,14 @@ parser.add_argument(
     help="path to configuration file",
 )
 args = parser.parse_args()
-if not os.path.exists(args.config):
-    raise Exception("Configuration file not found")
+with open(args.config, "r") as stream:
+    try:
+        cfg = yaml.safe_load(stream)
+    except yaml.YAMLError as exc:
+        print(exc)
+        exit(1)
 
 
-cfg = yaml.load(open(args.config))
 model_config = cfg.get("model")
 weights = model_config.get("weights_path")
 classes = model_config.get("classes")
