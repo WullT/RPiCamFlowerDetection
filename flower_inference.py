@@ -66,17 +66,20 @@ model = YoloModel(
 i = 0
 while True:
 
-    print("downloading image", i)
+    logging.info("downloading image {}".format(i))
     t0 = time.time()
     download_time = datetime.datetime.utcnow()
     image = download_image(
         image_source_url, username=image_source_username, password=image_source_password
     )
     t1 = time.time()
-    print("downloading image", i, "took", t1 - t0)
+    logging.info("downloading image {} took {}".format( i, t1 - t0))
+
     crops, result_class_names, result_scores = model.get_crops(image)
     t2 = time.time()
-    print("processing image", i, "took", t2 - t1)
+    logging.info("processing image {} took {}".format( i, t2 - t1))
+
+
     meta = {
         "time_download": (t1 - t0),
         "time_process": (t2 - t1),
@@ -99,9 +102,9 @@ while True:
         metadata=meta,
     )
     t3 = time.time()
-    print("uploading image", i, "took", t3 - t2)
-    print("TOTAL TIME:", t3 - t0)
-    print("Collecting")
+    logging.info("uploading image {} took {}".format( i,  t3 - t2))
+    logging.info("TOTAL TIME: {}".format(t3 - t0))
+    logging.info("Collecting")
     gc.collect()
     i += 1
     while time.time() - t0 < (capture_interval - 0.1):
