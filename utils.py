@@ -7,6 +7,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import base64
 import datetime
+import logging
 
 
 def download_image(url, username=None, password=None):
@@ -46,8 +47,16 @@ def upload_json(
             }
         )
     payload = {"detections": detected, "metadata": metadata}
-    response = requests.post(url, json=payload, auth=auth)
-    print("Status code:", response.status_code)
+    try:
+        response = requests.post(url, json=payload, auth=auth)
+        if response.status_code != 200:
+            logging.error("upload failed: {}".format(response.text))
+            return False
+        return True
+
+    except Exception as e:
+        logging.error("upload failed: {}".format(e))
+        return False
 
 
 def letterbox_image(image, size):
