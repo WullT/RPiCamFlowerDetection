@@ -1,3 +1,9 @@
+import logging
+logging.basicConfig(
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    level=logging.INFO,
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 from yolo_model import YoloModel
 import argparse
 import time
@@ -7,7 +13,6 @@ from utils import *
 import os
 import datetime
 import gc
-import logging
 import yaml
 import argparse
 import socket
@@ -32,6 +37,8 @@ classes = model_config.get("classes")
 image_size = model_config.get("image_size")
 confidence_threshold = model_config.get("confidence_threshold")
 iou_threshold = model_config.get("iou_threshold")
+margin = model_config.get("margin")
+
 image_source = cfg.get("image_source")
 image_source_url = image_source.get("url")
 image_source_username = image_source.get("username")
@@ -42,15 +49,17 @@ dest_endpoint_url = dest_endpoint.get("url")
 dest_endpoint_username = dest_endpoint.get("username")
 dest_endpoint_password = dest_endpoint.get("password")
 
+capture_interval = cfg.get("capture_interval")
+
+
 HOSTNAME = socket.gethostname()
 if "cam-" in HOSTNAME:
     HOSTNAME = HOSTNAME.replace("cam-", "")
 
-capture_interval = cfg.get("capture_interval")
 
 
 model = YoloModel(
-    weights, image_size, confidence_threshold, iou_threshold, classes=classes
+    weights, image_size, confidence_threshold, iou_threshold, classes=classes, margin=margin
 )
 
 
@@ -76,6 +85,8 @@ while True:
         "iou_thres": iou_threshold,
         "node_id": HOSTNAME,
         "capture_time": download_time.isoformat(),
+        "margin": model.margin,
+        "model_name": weights.split("/")[-1]
     }
     upload_json(
         crops,
